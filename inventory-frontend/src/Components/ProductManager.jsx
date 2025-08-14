@@ -1,6 +1,21 @@
 // frontend/src/components/ProductManager.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Stack,
+} from "@mui/material";
 
 export default function ProductManager() {
   const [products, setProducts] = useState([]);
@@ -29,6 +44,7 @@ export default function ProductManager() {
 
     if (!name || !price || !quantity) {
       setErrorMessage("Please fill all required fields.");
+      setSuccessMessage("");
       return;
     }
 
@@ -90,112 +106,135 @@ export default function ProductManager() {
   );
 
   return (
-    <div className="container mt-4">
-      <h2>Product Manager</h2>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Product Manager
+      </Typography>
 
-      {successMessage && (
-        <div className="alert alert-success">{successMessage}</div>
-      )}
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+      {successMessage && <Alert severity="success">{successMessage}</Alert>}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input
-          type="text"
-          placeholder="Name"
-          className="form-control mb-2"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          className="form-control mb-2"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="number"
-          step="0.01"
-          placeholder="Price"
-          className="form-control mb-2"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Quantity"
-          className="form-control mb-2"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn btn-primary me-2">
-          {editingId ? "Update Product" : "Add Product"}
-        </button>
-        {editingId && (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={resetForm}
-          >
-            Cancel Edit
-          </button>
-        )}
-      </form>
+      <Paper sx={{ p: 2, mt: 2, mb: 4 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              label="Product Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Price"
+              type="number"
+              inputProps={{ step: "0.01" }}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Quantity"
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+              fullWidth
+            />
 
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="Search by name or description"
+            <Stack direction="row" spacing={2}>
+              <Button variant="contained" color="primary" type="submit">
+                {editingId ? "Update Product" : "Add Product"}
+              </Button>
+              {editingId && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={resetForm}
+                >
+                  Cancel Edit
+                </Button>
+              )}
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+
+      <TextField
+        label="Search by name or description"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        fullWidth
+        sx={{ mb: 3 }}
       />
 
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price (₹)</th>
-            <th>Quantity</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td>{p.description}</td>
-                <td>{p.price}</td>
-                <td>{p.quantity}</td>
-                <td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => handleEdit(p)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(p.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center">
-                No matching products found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <b>Name</b>
+              </TableCell>
+              <TableCell>
+                <b>Description</b>
+              </TableCell>
+              <TableCell>
+                <b>Price (₹)</b>
+              </TableCell>
+              <TableCell>
+                <b>Quantity</b>
+              </TableCell>
+              <TableCell>
+                <b>Actions</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell>{p.name}</TableCell>
+                  <TableCell>{p.description}</TableCell>
+                  <TableCell>{p.price}</TableCell>
+                  <TableCell>{p.quantity}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        color="warning"
+                        size="small"
+                        onClick={() => handleEdit(p)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        onClick={() => handleDelete(p.id)}
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No matching products found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 }
