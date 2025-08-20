@@ -1,0 +1,31 @@
+
+/* Custom Admin Styles */
+
+/* Header background color */
+#header {
+    background: #4CAF50 !important; /* Green */
+}
+
+/* Link colors */
+a.section:link, a.section:visited {
+    color: #4CAF50 !important; /* Green */
+}
+
+/* Button colors */
+.button, input[type="submit"], input[type="button"], .submit-row input[type="submit"] {
+    background: #2196F3 !important; /* Blue */
+    color: white !important;
+    border-radius: 5px;
+}
+
+.button.default, input[type="submit"].default, .submit-row input[type="submit"].default {
+    background: #007bff !important; /* Darker Blue */
+}
+
+.button.hover, input[type="submit"].hover, input[type="button"].hover, .submit-row input[type="submit"].hover {
+    background: #0056b3 !important; /* Even Darker Blue on hover */
+}
+
+.deletelink {
+    background: #f44336 !important; /* Red */
+}
